@@ -1,0 +1,7 @@
+
+/Application/felix-cache/
+*.idea/
+*.iml
+*/target/
+*/testbundles/
+vcs.xml
