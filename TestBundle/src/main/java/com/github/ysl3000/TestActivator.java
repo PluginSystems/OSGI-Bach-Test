@@ -4,7 +4,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /**
- * Created by ysl3000 on 26.01.17.
+ * Created by ysl3000
  */
 public class TestActivator implements BundleActivator {
 
