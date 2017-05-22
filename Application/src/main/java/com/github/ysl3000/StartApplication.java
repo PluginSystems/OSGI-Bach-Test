@@ -2,13 +2,10 @@ package com.github.ysl3000;
 
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.FelixConstants;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.Constants;
+import org.osgi.framework.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
 import java.util.*;
 
 /**
@@ -18,16 +15,16 @@ public class StartApplication {
 
 
     private Felix felix;
-    private Set<Bundle> bundles = new HashSet<Bundle>();
+    private Set<Bundle> bundles = new HashSet<>();
 
     public StartApplication() throws FileNotFoundException {
-        Map<String, Object> felixConfig = new HashMap<String, Object>();
+        Map<String, Object> felixConfig = new HashMap<>();
 
         felixConfig.put(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA,
                 "some.module.i.dont.know; version=1.0.0");
 
 
-        List<Object> list = new LinkedList<Object>();
+        List<Object> list = new LinkedList<>();
         felixConfig.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, list);
 
         this.felix = new Felix(felixConfig);
@@ -39,14 +36,11 @@ public class StartApplication {
             dir.mkdirs();
 
 
-            File[] files = dir.listFiles(new FilenameFilter() {
-                public boolean accept(File dir, String name) {
-                    return name.endsWith(".jar");
-                }
-            });
+            File[] files = dir.listFiles((dir1, name) -> name.endsWith(".jar"));
 
             for (File file : files) {
-                bundles.add(this.felix.getBundleContext().installBundle("file:"+file.getAbsolutePath()));
+                Bundle bundle = this.felix.getBundleContext().installBundle("file:" + file.getAbsolutePath());
+                bundles.add(bundle);
             }
 
         } catch (BundleException e) {
@@ -97,5 +91,12 @@ public class StartApplication {
         } catch (BundleException e) {
             e.printStackTrace();
         }
+    }
+
+    public ServiceReference getServiceBy(Class<? extends ServiceReference> serviceReferenceClass) {
+        BundleContext context = felix.getBundleContext();
+
+        return context.
+                getServiceReference(serviceReferenceClass);
     }
 }
