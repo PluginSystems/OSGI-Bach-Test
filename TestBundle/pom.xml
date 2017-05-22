@@ -31,6 +31,8 @@
                         <Bundle-Version>1.0.0</Bundle-Version>
                         <Bundle-Activator>com.github.ysl3000.TestActivator</Bundle-Activator>
                         <Import-Package>org.osgi.framework</Import-Package>
+                        <Export-Package>com.github.ysl3000.api.*</Export-Package>
+
                     </instructions>
                 </configuration>
             </plugin>
@@ -57,6 +59,4 @@
 
         <finalName>osgi</finalName>
     </build>
-
-
 </project>

@@ -93,7 +93,7 @@ public class StartApplication {
         }
     }
 
-    public ServiceReference getServiceBy(Class<? extends ServiceReference> serviceReferenceClass) {
+    public ServiceReference getServiceBy(Class<?> serviceReferenceClass) {
         BundleContext context = felix.getBundleContext();
 
         return context.

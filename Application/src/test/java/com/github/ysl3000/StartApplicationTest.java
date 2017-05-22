@@ -1,7 +1,6 @@
 package com.github.ysl3000;
 
-import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
@@ -24,13 +23,13 @@ public class StartApplicationTest {
                 .include(this.getClass().getName() + ".*")
                 // Set the following options as needed
                 .mode(Mode.AverageTime)
-                .timeUnit(TimeUnit.MILLISECONDS)
+                .timeUnit(TimeUnit.MICROSECONDS)
                 .warmupTime(TimeValue.seconds(1))
                 .warmupIterations(0)
                 .measurementTime(TimeValue.seconds(1))
                 .measurementIterations(7)
                 .threads(1)
-                .forks(0)
+                .forks(1)
                 .shouldFailOnError(false)
                 .shouldDoGC(true)
                 //.jvmArgs("-XX:+UnlockDiagnosticVMOptions", "-XX:+PrintInlining")
@@ -43,60 +42,81 @@ public class StartApplicationTest {
     }
 
 
-    @Benchmark
-    public void loadUnloadPerformance() throws FileNotFoundException {
-        StartApplication startApplication= new StartApplication();
-        startApplication.start();
+    //@State(Scope.Benchmark)
+    public static class LoadUnloadPerformance {
 
 
-        startApplication.stop();
+        private StartApplication application;
 
-    }
+        //@Setup
+        public void setUp() throws FileNotFoundException {
 
-
-    @Benchmark
-    public void contextSwitching() throws FileNotFoundException {
-
-        StartApplication startApplication = new StartApplication();
-
-        startApplication.start();
+            this.application = new StartApplication();
 
 
-        ContextService contextService = (ContextService) startApplication.getServiceBy(ContextService.class);
-
-        if (contextService != null) {
-            contextService.callAPI(API.api);
-        } else {
-            System.out.println("ContextService not available");
         }
 
-        startApplication.stop();
+        //@Benchmark
+        public void loadUnloadPerformance() throws FileNotFoundException {
+            this.application.start();
 
+            this.application.stop();
+
+        }
 
     }
 
-    @Benchmark
-    public void contextSwitchingWithReturntype() throws FileNotFoundException {
-        StartApplication startApplication= new StartApplication();
-
-        startApplication.start();
+    @State(Scope.Benchmark)
+    public static class ContextSwitchingTest {
 
 
-        ContextService contextService = (ContextService) startApplication.getServiceBy(ContextService.class);
+        private StartApplication startApplication;
 
-        if (contextService != null) {
-            System.out.println(contextService.getTestString(API.api));
-        } else {
-            System.out.println("ContextService not available ");
+        @Setup
+        public void setUp() throws FileNotFoundException {
+            this.startApplication = new StartApplication();
+            this.startApplication.start();
         }
 
 
-        startApplication.stop();
+        @Benchmark
+        public void contextSwitching() throws FileNotFoundException {
+
+            /*
+            ContextService contextService = (ContextService) startApplication.getServiceBy(ContextService.class);
+
+            if (contextService != null) {
+                contextService.getTestString();
+            } else {
+                System.out.println("ContextService not available");
+            }
+            */
+
+        }
+
+        @Benchmark
+        public void contextSwitchingWithReturntype() throws FileNotFoundException {
+
+
+            //ContextService contextService = (ContextService) startApplication.getServiceBy(ContextService.class);
+
+            /*if (contextService != null) {
+                System.out.println(contextService.getTestString());
+            } else {
+                System.out.println("ContextService not available ");
+            }*/
+
+        }
+
+        @TearDown
+        public void tearDown() {
+            this.startApplication.stop();
+            this.startApplication = null;
+            System.gc();
+
+        }
 
     }
-
-
-
 
 
 }
