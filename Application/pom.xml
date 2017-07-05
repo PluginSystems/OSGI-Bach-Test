@@ -19,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>com.github.ysl3000</groupId>
-            <artifactId>TestBundle</artifactId>
+            <artifactId>CommonClasses</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>

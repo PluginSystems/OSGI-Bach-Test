@@ -23,7 +23,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${pom.groupId}.${pom.artifactId}</Bundle-SymbolicName>
-                        <Bundle-Name>Service listener example</Bundle-Name>
+                        <Bundle-Name>PerfBench</Bundle-Name>
                         <Bundle-Description>A bundle that displays messages at startup and when
                             service events occur
                         </Bundle-Description>
@@ -59,4 +59,13 @@
 
         <finalName>osgi</finalName>
     </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.github.ysl3000</groupId>
+            <artifactId>CommonClasses</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
 </project>

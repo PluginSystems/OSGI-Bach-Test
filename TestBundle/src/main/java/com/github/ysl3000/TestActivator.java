@@ -20,7 +20,7 @@ public class TestActivator implements BundleActivator {
 
         Dictionary dic = new Properties();
 
-        context.registerService(ContextService.class.getName(), new TestContextService(), dic);
+        context.registerService(ContextService.class, new TestContextService(), dic);
 
 
     }

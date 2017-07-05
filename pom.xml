@@ -10,6 +10,7 @@
     <modules>
         <module>TestBundle</module>
         <module>Application</module>
+        <module>CommonClasses</module>
     </modules>
 
     <packaging>pom</packaging>

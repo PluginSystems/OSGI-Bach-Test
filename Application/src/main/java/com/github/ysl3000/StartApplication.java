@@ -9,13 +9,13 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
- * Created by ysl3000 on 26.01.17.
+ * Created by ysl3000
  */
 public class StartApplication {
 
 
     private Felix felix;
-    private Set<Bundle> bundles = new HashSet<>();
+    private Map<String,Bundle> bundles = new HashMap<>();
 
     public StartApplication() throws FileNotFoundException {
         Map<String, Object> felixConfig = new HashMap<>();
@@ -40,7 +40,7 @@ public class StartApplication {
 
             for (File file : files) {
                 Bundle bundle = this.felix.getBundleContext().installBundle("file:" + file.getAbsolutePath());
-                bundles.add(bundle);
+                bundles.put(bundle.getSymbolicName(),bundle);
             }
 
         } catch (BundleException e) {
@@ -67,25 +67,37 @@ public class StartApplication {
 
         try {
             this.felix.start();
-
-            for (Bundle bundle :
-                    bundles) {
-                bundle.start();
-            }
         } catch (BundleException e) {
             e.printStackTrace();
         }
 
     }
 
+    public void startBundles(){
+        bundles.forEach((l, b) -> {
+            try {
+                b.start();
+            } catch (BundleException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+
+    public void stopBundles(){
+        bundles.forEach((k, b) -> {
+            try {
+                b.stop();
+            } catch (BundleException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+
     public void stop() {
 
         try {
-
-            for (Bundle bundle :
-                    bundles) {
-                bundle.stop();
-            }
 
             this.felix.stop();
         } catch (BundleException e) {
@@ -93,10 +105,11 @@ public class StartApplication {
         }
     }
 
-    public ServiceReference getServiceBy(Class<?> serviceReferenceClass) {
-        BundleContext context = felix.getBundleContext();
+    public Bundle getBundle(String bundleClassName){
+        return bundles.get(bundleClassName);
+    }
 
-        return context.
-                getServiceReference(serviceReferenceClass);
+    public void printBundle(){
+        bundles.forEach((k,v)-> System.out.println(k+" : "+ v));
     }
 }
