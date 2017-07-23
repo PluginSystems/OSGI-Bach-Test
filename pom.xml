@@ -11,6 +11,7 @@
         <module>TestBundle</module>
         <module>Application</module>
         <module>CommonClasses</module>
+        <module>PluginTwo</module>
     </modules>
 
     <packaging>pom</packaging>

@@ -21,13 +21,13 @@ public class StartApplicationTest {
                 // You can be more specific if you'd like to run only one benchmark per test.
                 .include(this.getClass().getPackage().getName() + ".*")
                 // Set the following options as needed
-                .mode(Mode.AverageTime)
-                .timeUnit(TimeUnit.MICROSECONDS)
+                .mode(Mode.SampleTime)
+                .timeUnit(TimeUnit.NANOSECONDS)
                 .warmupTime(TimeValue.seconds(1))
                 .timeout(TimeValue.NONE)
                 .warmupIterations(3)
-                .measurementTime(TimeValue.seconds(1))
-                .measurementIterations(70)
+                .measurementTime(TimeValue.nanoseconds(1))
+                .measurementIterations(250)
                 .threads(1)
                 .forks(1)
                 .shouldFailOnError(false)
