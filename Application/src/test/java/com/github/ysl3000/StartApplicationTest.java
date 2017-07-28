@@ -1,12 +1,14 @@
 package com.github.ysl3000;
 
-import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.runner.Runner;
-import org.openjdk.jmh.runner.options.Options;
-import org.openjdk.jmh.runner.options.OptionsBuilder;
-import org.openjdk.jmh.runner.options.TimeValue;
+import com.github.ysl3000.benchmarks.ContextSwitchingTest;
+import com.github.ysl3000.benchmarks.LoadUnloadEnableDisableBenchmark;
+import com.github.ysl3000.utils.TestCase;
 
-import java.util.concurrent.TimeUnit;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ysl3000
@@ -16,33 +18,62 @@ public class StartApplicationTest {
     @org.junit.Test
     public void main() throws Exception {
 
-        Options opt = new OptionsBuilder()
-                // Specify which benchmarks to run.
-                // You can be more specific if you'd like to run only one benchmark per test.
-                .include(this.getClass().getPackage().getName() + ".*")
-                // Set the following options as needed
-                .mode(Mode.SampleTime)
-                .timeUnit(TimeUnit.NANOSECONDS)
-                .warmupTime(TimeValue.seconds(1))
-                .timeout(TimeValue.NONE)
-                .warmupIterations(3)
-                .measurementTime(TimeValue.nanoseconds(1))
-                .measurementIterations(250)
-                .threads(1)
-                .forks(1)
-                .shouldFailOnError(false)
-                .shouldDoGC(true)
-                //.jvmArgs("-Djmh.ignoreLock=true" /*"-XX:+UnlockDiagnosticVMOptions", "-XX:+PrintInlining"*/)
-                //.addProfiler(WinPerfAsmProfiler.class)
-                .build();
+        List<TestCase> stats = new ArrayList<>();
 
-        new Runner(opt).run();
+        StartApplication startApplication = new StartApplication();
+        startApplication.start();
+        startApplication.stopBundles();
+        startApplication.stop();
 
+
+       // stats.add(new LoadUnloadEnableDisableBenchmark(startApplication));
+        stats.add(new ContextSwitchingTest(startApplication));
+
+        // 10, 50, 70, 100, 250
+        int[] count = {5000, 10000, 50000};
+
+        long currentTimeMillis = System.currentTimeMillis();
+
+
+        for (int cycle : count) {
+
+            stats.forEach(testCase -> {
+                testCase.RunTestFully(cycle);
+            });
+
+
+            stats.forEach(finishedTest ->
+            {
+                FileOutputStream streamWriter = null;
+                try {
+                    streamWriter = new FileOutputStream("./results_" + cycle + "_" + finishedTest.GetName() + "_nanoseconds_" + currentTimeMillis + ".csv");
+
+                    finishedTest.PrintStats(streamWriter);
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        streamWriter.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        try {
+                            streamWriter.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+
+
+            });
+        }
+
+        System.out.println("Test finished");
 
     }
-
-
-
 
 
 }

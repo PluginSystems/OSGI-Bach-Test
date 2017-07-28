@@ -9,12 +9,12 @@ import java.util.Arrays;
  */
 public class TestContextService implements ContextService {
     @Override
-    public void printString() {
-        Arrays.asList("Hey", "das", "ist", "ein", "Test").forEach(System.out::println);
+    public void test() {
+
     }
 
     @Override
-    public String getTestString() {
-        return "Der Teststring ist: teststring ";
+    public void printAvailability() {
+        System.out.println("jep ist vorhanden");
     }
 }

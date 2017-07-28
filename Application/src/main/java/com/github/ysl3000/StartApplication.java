@@ -16,6 +16,7 @@ public class StartApplication {
 
     private Felix felix;
     private Map<String,Bundle> bundles = new HashMap<>();
+    private Set<Bundle> bundles_set = new HashSet<>();
 
     public StartApplication() throws FileNotFoundException {
         Map<String, Object> felixConfig = new HashMap<>();
@@ -41,6 +42,7 @@ public class StartApplication {
             for (File file : files) {
                 Bundle bundle = this.felix.getBundleContext().installBundle("file:" + file.getAbsolutePath());
                 bundles.put(bundle.getSymbolicName(),bundle);
+                bundles_set.add(bundle);
             }
 
         } catch (BundleException e) {
@@ -74,22 +76,22 @@ public class StartApplication {
     }
 
     public void startBundles(){
-        bundles.forEach((l, b) -> {
+        bundles_set.forEach((b) -> {
             try {
                 b.start();
             } catch (BundleException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         });
     }
 
 
     public void stopBundles(){
-        bundles.forEach((k, b) -> {
+        bundles_set.forEach((b) -> {
             try {
                 b.stop();
             } catch (BundleException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         });
     }
@@ -110,6 +112,6 @@ public class StartApplication {
     }
 
     public void printBundle(){
-        bundles.forEach((k,v)-> System.out.println(k+" : "+ v));
+        bundles.forEach((k,v)-> System.out.println(k+" : "+ v.getSymbolicName()+" active: "+(v.getState() == Bundle.ACTIVE)));
     }
 }

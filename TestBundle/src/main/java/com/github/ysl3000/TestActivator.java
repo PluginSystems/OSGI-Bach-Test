@@ -16,17 +16,14 @@ public class TestActivator implements BundleActivator {
 
     public void start(BundleContext context) throws Exception {
 
-        System.out.println("Starting: " + getClass().getSimpleName());
 
         Dictionary dic = new Properties();
 
         context.registerService(ContextService.class, new TestContextService(), dic);
-
-
     }
 
     public void stop(BundleContext context) throws Exception {
 
-        System.out.println("Stopping: " + getClass().getSimpleName());
     }
+
 }
